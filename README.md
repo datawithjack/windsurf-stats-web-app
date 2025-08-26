@@ -1,5 +1,28 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Database Setup
+
+This application connects to a MySQL database called `jfa_heatwave_db` and uses the `athlete_profile_results` view. To set up the database connection:
+
+1. Create a `.env.local` file in the root directory with the following variables:
+```bash
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+MYSQL_USER=your_username
+MYSQL_PASSWORD=your_password
+MYSQL_DATABASE=jfa_heatwave_db
+```
+
+2. Make sure the `athlete_profile_results` view exists in your database with the following columns:
+   - `event_date` (DATE)
+   - `location` (VARCHAR)
+   - `event_name` (VARCHAR)
+   - `rank` (INT)
+   - `incomplete` (BOOLEAN)
+   - `athlete_name` (VARCHAR)
+   - `event_id` (VARCHAR)
+   - `category_code` (VARCHAR)
+
 ## Getting Started
 
 First, run the development server:

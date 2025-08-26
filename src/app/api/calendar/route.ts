@@ -1,0 +1,45 @@
+import { NextResponse } from 'next/server';
+import mysql from 'mysql2/promise';
+
+export async function GET() {
+  let connection;
+  try {
+    connection = await mysql.createConnection({
+      host: process.env.MYSQL_HOST || 'localhost',
+      port: parseInt(process.env.MYSQL_PORT || '3306'),
+      user: process.env.MYSQL_USER,
+      password: process.env.MYSQL_PASSWORD,
+      database: process.env.MYSQL_DATABASE,
+    });
+
+    const [rows] = await connection.execute(
+      `SELECT 
+        ec.event_id,
+        ec.event_name,
+        ec.section,
+        ec.start_date,
+        ec.end_date,
+        COUNT(DISTINCT ec.category_code) AS category_count,
+        COALESCE(per.total, 0) as rider_count
+      FROM PWA_EVENT_CATEGORIES ec
+      LEFT JOIN (
+        SELECT 
+          event_id,
+          COUNT(DISTINCT sailor_href) as total
+        FROM PWA_EVENT_RESULTS
+        GROUP BY event_id
+      ) per ON ec.event_id = per.event_id
+      WHERE ec.section = 'completed events'
+      GROUP BY ec.event_id, ec.event_name, ec.section, ec.start_date, ec.end_date, per.total
+      ORDER BY ec.start_date DESC;`
+    );
+
+    console.log('=== MYSQL ROWS ===', JSON.stringify(rows, null, 2));
+    return NextResponse.json(rows || []);
+  } catch (err) {
+    console.error('Database connection error:', err);
+    return NextResponse.json([], { status: 200 });
+  } finally {
+    if (connection) await connection.end();
+  }
+}

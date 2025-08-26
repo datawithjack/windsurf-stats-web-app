@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ssh:*)",
+      "Bash(PORT=3000 npm run dev)",
+      "Bash(npm run dev:*)",
+      "Read(/C:\\Users\\jackf\\OneDrive\\Pictures\\Screenshots/**)",
+      "Read(/C:\\Users\\jackf\\OneDrive\\Pictures\\Screenshots/**)",
+      "Read(/C:\\Users\\jackf\\OneDrive\\Pictures\\Screenshots/**)",
+      "Read(/C:\\Users\\jackf\\OneDrive\\Pictures\\Screenshots/**)",
+      "Read(/C:\\Users\\jackf\\OneDrive\\Pictures\\Screenshots/**)",
+      "Read(/C:\\Users\\jackf\\OneDrive\\Pictures\\Screenshots/**)",
+      "Read(/C:\\Users\\jackf\\OneDrive\\Pictures\\Screenshots/**)",
+      "Read(/C:\\Users\\jackf\\OneDrive\\Pictures\\Screenshots/**)",
+      "Read(/C:\\Users\\jackf\\OneDrive\\Pictures\\Screenshots/**)",
+      "Read(/C:\\Users\\jackf\\OneDrive\\Pictures\\Screenshots/**)",
+      "Bash(npx:*)",
+      "Bash(npm install:*)",
+      "WebSearch",
+      "WebSearch",
+      "WebSearch",
+      "Bash(npm run build:*)",
+      "Bash(git restore:*)",
+      "Read(/C:\\Users\\jackf\\OneDrive\\Pictures\\Screenshots/**)",
+      "Read(/C:\\Users\\jackf\\OneDrive\\Pictures\\Screenshots/**)",
+      "Read(/C:\\Users\\jackf\\OneDrive\\Pictures\\Screenshots/**)",
+      "Read(/C:\\Users\\jackf\\OneDrive\\Pictures\\Screenshots/**)",
+      "Read(/C:\\Users\\jackf\\OneDrive\\Pictures\\Screenshots/**)",
+      "Bash(pkill:*)",
+      "Bash(taskkill:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

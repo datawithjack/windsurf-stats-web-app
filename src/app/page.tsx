@@ -1,103 +1,215 @@
-import Image from "next/image";
+'use client';
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 
-export default function Home() {
+type Event = {
+  event_id: number;
+  event_name: string;
+  section: string;
+  start_date: string;
+  end_date: string;
+  category_count: number;
+  rider_count: number;
+};
+
+// Simple navigation component
+function ResponsiveNav({ currentPage }: { currentPage: string }) {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <nav className="flex items-center space-x-6">
+      {/* Desktop Navigation */}
+      <div className="hidden md:flex items-center space-x-6">
+        <Link 
+          href="/" 
+          className={`font-normal transition-colors ${
+            currentPage === 'events' 
+              ? 'text-[#1abc9c]' 
+              : 'text-white/80 hover:text-white'
+          }`}
+        >
+          Events
+        </Link>
+        <Link 
+          href="/athletes" 
+          className={`font-normal transition-colors ${
+            currentPage === 'athletes' 
+              ? 'text-[#1abc9c]' 
+              : 'text-white/80 hover:text-white'
+          }`}
+        >
+          Athletes
+        </Link>
+        <Link 
+          href="/head-to-heads" 
+          className={`font-normal transition-colors ${
+            currentPage === 'head-to-heads' 
+              ? 'text-[#1abc9c]' 
+              : 'text-white/80 hover:text-white'
+          }`}
+        >
+          Head to Heads
+        </Link>
+        <Link 
+          href="/about" 
+          className={`font-normal transition-colors ${
+            currentPage === 'about' 
+              ? 'text-[#1abc9c]' 
+              : 'text-white/80 hover:text-white'
+          }`}
+        >
+          About
+        </Link>
+      </div>
+    </nav>
+  );
+}
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+export default function EventsPage() {
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showLanding, setShowLanding] = useState(true);
+  const [fadeOut, setFadeOut] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/calendar')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setEvents(data);
+        } else {
+          setEvents([]);
+        }
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching events data:', error);
+        setLoading(false);
+      });
+  }, []);
+
+  // Handle fade out on click
+  const handleLandingClick = () => {
+    setFadeOut(true);
+    setTimeout(() => setShowLanding(false), 600); // match animation duration
+  };
+
+  if (loading) {
+    return (
+      <div 
+        className="min-h-screen bg-cover bg-center bg-fixed relative flex items-center justify-center"
+        style={{
+          backgroundImage: 'url(https://www.pwaworldtour.com/typo3conf/ext/sitepackage/Resources/Public/Images/bg_main.jpg)'
+        }}
+      >
+        <div className="text-xl text-white">Loading events...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div 
+      className="min-h-screen bg-cover bg-center bg-fixed relative"
+      style={{
+        backgroundImage: 'url(https://www.pwaworldtour.com/typo3conf/ext/sitepackage/Resources/Public/Images/bg_main.jpg)'
+      }}
+    >
+      {/* Background overlay for better readability */}
+      <div className="absolute inset-0 bg-black/10"></div>
+      <div className="container mx-auto px-4 py-8 relative z-10">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="bg-black/80 text-white px-6 py-4 rounded-lg mb-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="bg-red-600 text-white px-3 py-2 rounded-full font-normal text-sm">
+                  LOGO
+                </div>
+                <h1 className="text-lg font-normal">
+                  World Wave Tour Stats
+                </h1>
+              </div>
+              <ResponsiveNav currentPage="events" />
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+
+        {/* Events Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {Array.isArray(events) && events.map((event, idx) => (
+            <Link 
+              href={`/event-stats?eventId=${event.event_id}&eventName=${encodeURIComponent(event.event_name)}`} 
+              key={idx} 
+              className="block group"
+            >
+              <div 
+                className="bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border border-white/20 p-6 hover:bg-teal-50 hover:shadow-2xl transition-all duration-300 cursor-pointer group-hover:border-teal-400 h-64 flex flex-col"
+              >
+                <h3 className="text-lg text-gray-900 mb-3 font-normal h-14 flex items-start overflow-hidden">
+                  <span className="line-clamp-2">{event.event_name}</span>
+                </h3>
+                <div className="space-y-2 text-sm text-gray-700 flex-grow">
+                  <div className="flex items-center">
+                    <span className="font-normal w-20 mr-2">Status:</span>
+                    <span className={`px-2 py-1 rounded text-xs font-normal ${
+                      event.section === 'Completed events' 
+                        ? 'bg-green-100 text-green-800' 
+                        : event.section === 'Upcoming events'
+                        ? 'bg-blue-100 text-blue-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}>
+                      {event.section}
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="font-normal w-20 mr-2">Start:</span>
+                    <span>{new Date(event.start_date).toLocaleDateString('en-GB')}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="font-normal w-20 mr-2">End:</span>
+                    <span>{new Date(event.end_date).toLocaleDateString('en-GB')}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="font-normal w-20 mr-2">Eliminations:</span>
+                    <span className="bg-teal-100 text-teal-800 px-2 py-1 rounded text-xs font-normal">
+                      {event.category_count}
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="font-normal w-20 mr-2">Riders:</span>
+                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-normal">
+                      {event.rider_count || 0}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {events.length === 0 && !loading && (
+          <div className="text-center text-white mt-8">
+            <p className="text-xl">No events found.</p>
+          </div>
+        )}
+      </div>
+
+      {/* Landing Overlay */}
+      {showLanding && (
+        <div
+          className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/70 backdrop-blur-sm transition-opacity duration-600 ${fadeOut ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+          style={{ cursor: 'pointer' }}
+          onClick={handleLandingClick}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <div className="text-center select-none">
+            <h1 className="text-4xl md:text-5xl text-white mb-6 drop-shadow-lg font-normal">World Wave Tour Stats</h1>
+            <div className="text-lg md:text-xl text-white/90 mb-4 font-normal drop-shadow">
+              Rider profiles, events stats, head to heads and much more...<br />
+              All the rider stats for all windsurf tours in one place.
+            </div>
+            <div className="text-sm italic text-white/70 mt-2 font-normal">#makewindsurfgreatagain</div>
+            <div className="mt-8 text-xs text-white/60 font-normal">Click anywhere to continue</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
