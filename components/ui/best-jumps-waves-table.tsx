@@ -62,7 +62,7 @@ export function BestJumpsWavesTable({
   return (
     <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border border-white/20 p-6 h-full flex flex-col">
       <div className="flex items-center justify-between mb-4 flex-shrink-0">
-        <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
+        <h3 className="text-lg font-normal text-gray-800">{title}</h3>
         <div className="flex rounded-lg overflow-hidden border border-gray-200">
           <button
             onClick={() => onFilterChange('Jump')}
@@ -89,12 +89,12 @@ export function BestJumpsWavesTable({
       
       <div className="overflow-auto flex-1 max-h-96">
         <table className="min-w-full">
-          <thead className="bg-gray-100 sticky top-0">
+          <thead className="bg-gray-100 sticky top-0 z-10">
             <tr>
-              <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">Athlete</th>
-              <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">Score</th>
+              <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider bg-gray-100">Athlete</th>
+              <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider bg-gray-100">Score</th>
               {currentFilter === 'Jump' && (
-                <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">Score Type</th>
+                <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider bg-gray-100">Score Type</th>
               )}
             </tr>
           </thead>

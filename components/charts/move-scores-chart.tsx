@@ -59,10 +59,10 @@ export function MoveScoresChart({ data }: MoveScoresChartProps) {
             data={chartData}
             layout="vertical"
             margin={{ top: 20, right: 40, left: 80, bottom: 20 }}
-            barCategoryGap="15%"
+            barCategoryGap="35%"
             barGap={6}
           >
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" opacity={0.7} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" opacity={0.7} horizontal={false} />
             <XAxis 
               type="number"
               domain={[0, 'dataMax']}
@@ -74,7 +74,7 @@ export function MoveScoresChart({ data }: MoveScoresChartProps) {
               type="category"
               dataKey="moveType"
               width={70}
-              tick={{ fontSize: 11, fill: '#374151' }}
+              tick={{ fontSize: 13, fill: '#374151' }}
               axisLine={{ stroke: '#d1d5db', strokeWidth: 1 }}
               tickLine={{ stroke: '#d1d5db' }}
             />

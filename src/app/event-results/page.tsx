@@ -96,17 +96,17 @@ export default function EventResultsPage() {
         <div className="text-white px-6 py-4 mb-8 rounded-lg shadow-lg relative" style={{background: 'linear-gradient(to right, #1abc9c 50%, #477fae)'}}>
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <h2 className="text-xl font-semibold">{eventName}</h2>
+              <h2 className="text-xl font-normal">{eventName}</h2>
             </div>
             
             {/* Desktop Buttons - Hidden on small screens */}
             <div className="hidden md:flex items-center space-x-2">
               <Link href={`/event-stats?eventId=${eventId}&eventName=${encodeURIComponent(eventName)}`}>
-                <button className="bg-white/10 hover:bg-white/20 px-4 py-2 rounded text-sm font-medium transition-colors border border-white/20">
+                <button className="bg-white/10 hover:bg-white/20 px-4 py-2 rounded text-sm font-normal transition-colors border border-white/20">
                   Event Stats
                 </button>
               </Link>
-              <button className="bg-white/40 text-white px-4 py-2 rounded text-sm font-medium shadow-sm border border-white/60">
+              <button className="bg-white/40 text-white px-4 py-2 rounded text-sm font-normal shadow-sm border border-white/60">
                 Results & Elimination Ladder
               </button>
             </div>
@@ -115,7 +115,7 @@ export default function EventResultsPage() {
             <div className="hidden md:flex items-center space-x-2">
               <button 
                 onClick={() => setSelectedGender('Men')}
-                className={`px-3 py-1 rounded text-sm font-medium transition-colors border ${
+                className={`px-3 py-1 rounded text-sm font-normal transition-colors border ${
                   selectedGender === 'Men' 
                     ? 'bg-white/40 text-white border-white/60 shadow-sm' 
                     : 'bg-white/20 hover:bg-white/30 border-white/30'
@@ -125,7 +125,7 @@ export default function EventResultsPage() {
               </button>
               <button 
                 onClick={() => setSelectedGender('Women')}
-                className={`px-3 py-1 rounded text-sm font-medium transition-colors border ${
+                className={`px-3 py-1 rounded text-sm font-normal transition-colors border ${
                   selectedGender === 'Women' 
                     ? 'bg-white/40 text-white border-white/60 shadow-sm' 
                     : 'bg-white/10 hover:bg-white/20 border-white/20'
@@ -159,7 +159,7 @@ export default function EventResultsPage() {
                     Event Stats
                   </button>
                 </Link>
-                <button className="w-full text-left px-4 py-2 text-gray-800 bg-gray-100 border border-gray-300 shadow-sm rounded font-medium">
+                <button className="w-full text-left px-4 py-2 text-gray-800 bg-gray-100 border border-gray-300 shadow-sm rounded font-normal">
                   Results & Elimination Ladder
                 </button>
                 <hr className="border-gray-200" />
@@ -169,7 +169,7 @@ export default function EventResultsPage() {
                     setIsMenuOpen(false);
                   }}
                   className={`w-full text-left px-4 py-2 text-gray-800 rounded transition-colors ${
-                    selectedGender === 'Men' ? 'bg-gray-100 border border-gray-300 shadow-sm font-medium' : 'hover:bg-gray-100'
+                    selectedGender === 'Men' ? 'bg-gray-100 border border-gray-300 shadow-sm font-normal' : 'hover:bg-gray-100'
                   }`}
                 >
                   Men
@@ -180,7 +180,7 @@ export default function EventResultsPage() {
                     setIsMenuOpen(false);
                   }}
                   className={`w-full text-left px-4 py-2 text-gray-800 rounded transition-colors ${
-                    selectedGender === 'Women' ? 'bg-gray-100 border border-gray-300 shadow-sm font-medium' : 'hover:bg-gray-100'
+                    selectedGender === 'Women' ? 'bg-gray-100 border border-gray-300 shadow-sm font-normal' : 'hover:bg-gray-100'
                   }`}
                 >
                   Women
@@ -190,45 +190,68 @@ export default function EventResultsPage() {
           )}
         </div>
 
-        {/* Results Table */}
-        <div className="w-full max-w-lg">
-          <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden">
-            <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-800">Event Results</h3>
-            </div>
-            <div className="max-h-[50vh] md:max-h-[60vh] lg:max-h-[70vh] overflow-y-auto">
-              <table className="w-full">
-                <thead className="bg-gray-100 sticky top-0">
-                  <tr>
-                    <th className="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rider</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sponsors</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {results.length === 0 ? (
+        {/* Results Table and Elimination Ladder - Side by Side */}
+        <div className="grid grid-cols-1 lg:grid-cols-[30%_70%] gap-6 mb-8 h-[500px]">
+          {/* Results Table - 30% width */}
+          <div className="min-w-0 h-full">
+            <div className="bg-white/95 backdrop-blur-sm shadow-xl border border-white/20 rounded-lg p-6 h-full flex flex-col">
+              <div className="flex items-center justify-between mb-4 flex-shrink-0">
+                <h3 className="text-lg font-normal text-gray-800">Event Results</h3>
+                <div className="h-8"></div>
+              </div>
+              
+              <div className="overflow-auto flex-1 max-h-[500px]">
+                <table className="min-w-full">
+                  <thead className="bg-gray-100 sticky top-0 z-10">
                     <tr>
-                      <td colSpan={3} className="px-4 py-8 text-center text-gray-500">
-                        No results available for this event
-                      </td>
+                      <th className="px-4 py-2 text-center text-xs font-normal text-gray-500 uppercase tracking-wider bg-gray-100">Position</th>
+                      <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider bg-gray-100">Rider</th>
+                      <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider bg-gray-100">Sponsors</th>
                     </tr>
-                  ) : (
-                    results.map((result, index) => (
-                      <tr key={index} className="hover:bg-gray-50">
-                        <td className="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900 text-center">
-                          {result.Position}
-                        </td>
-                        <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
-                          {result.Rider}
-                        </td>
-                        <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
-                          {result.Sponsors}
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {results.length === 0 ? (
+                      <tr>
+                        <td colSpan={3} className="px-4 py-8 text-center text-gray-500">
+                          No results available for this event
                         </td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+                    ) : (
+                      results.map((result, index) => (
+                        <tr key={index} className="hover:bg-gray-50 group relative">
+                          <td className="px-4 py-2 whitespace-nowrap text-sm font-normal text-gray-900 text-center">
+                            {result.Position}
+                          </td>
+                          <td className="px-4 py-2 whitespace-nowrap text-sm font-normal text-gray-900">
+                            {result.Rider}
+                          </td>
+                          <td className="px-4 py-2 whitespace-nowrap text-sm font-normal text-gray-900">
+                            {result.Sponsors}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          {/* Elimination Ladder Placeholder - 70% width */}
+          <div className="min-w-0 h-full">
+            <div className="bg-white/95 backdrop-blur-sm shadow-xl border border-white/20 rounded-lg p-6 h-full flex flex-col">
+              <div className="flex items-center justify-between mb-4 flex-shrink-0">
+                <h3 className="text-lg font-normal text-gray-800">Elimination Ladder</h3>
+                <div className="h-8"></div>
+              </div>
+              
+              <div className="flex-1 flex items-center justify-center">
+                <div className="text-center text-gray-500">
+                  <div className="text-4xl mb-4">🏆</div>
+                  <p className="text-lg">Elimination Ladder</p>
+                  <p className="text-sm mt-2">Coming Soon</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

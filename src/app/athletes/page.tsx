@@ -7,6 +7,7 @@ import { ResultsTable } from '../../../components/athletes/results-table';
 import { BestAverageChart } from '../../../components/charts/best-average-chart';
 import { SuccessRateChart } from '../../../components/charts/success-rate-chart';
 import { ResponsiveNav } from '../../../components/ui/responsive-nav';
+import { SearchableSelect } from '../../../components/ui/searchable-select';
 import { AthleteFilter, YearFilter, AthleteResult } from '../../../lib/types';
 
 export default function AthletesPage() {
@@ -149,44 +150,34 @@ export default function AthletesPage() {
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold">Athlete Profile</h2>
             <div className="flex items-center space-x-4">
-              <select 
-                className="bg-teal-600 text-white px-3 py-1 rounded text-sm border-none"
+              <SearchableSelect
+                options={filtersLoading ? [] : [
+                  { value: '', label: 'All Athletes' },
+                  ...athletes.map(athlete => ({
+                    value: athlete.athlete_name,
+                    label: athlete.athlete_name
+                  }))
+                ]}
                 value={selectedAthlete}
-                onChange={(e) => setSelectedAthlete(e.target.value)}
+                onChange={setSelectedAthlete}
+                placeholder={filtersLoading ? "Loading..." : "Select an athlete"}
                 disabled={filtersLoading}
-              >
-                {filtersLoading ? (
-                  <option>Loading...</option>
-                ) : (
-                  <>
-                    <option value="">All Athletes</option>
-                    {athletes.map((athlete, index) => (
-                      <option key={index} value={athlete.athlete_name}>
-                        {athlete.athlete_name}
-                      </option>
-                    ))}
-                  </>
-                )}
-              </select>
-              <select 
-                className="bg-teal-600 text-white px-3 py-1 rounded text-sm border-none"
+                className="min-w-[200px]"
+              />
+              <SearchableSelect
+                options={filtersLoading ? [] : [
+                  { value: '', label: 'All Years' },
+                  ...years.map(year => ({
+                    value: year.year.toString(),
+                    label: year.year.toString()
+                  }))
+                ]}
                 value={selectedYear}
-                onChange={(e) => setSelectedYear(e.target.value)}
+                onChange={setSelectedYear}
+                placeholder={filtersLoading ? "Loading..." : "Select a year"}
                 disabled={filtersLoading}
-              >
-                {filtersLoading ? (
-                  <option>Loading...</option>
-                ) : (
-                  <>
-                    <option value="">All Years</option>
-                    {years.map((year, index) => (
-                      <option key={index} value={year.year.toString()}>
-                        {year.year}
-                      </option>
-                    ))}
-                  </>
-                )}
-              </select>
+                className="min-w-[120px]"
+              />
             </div>
           </div>
         </div>
@@ -195,12 +186,21 @@ export default function AthletesPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {/* Left Column - Athlete Profile */}
           <div className="lg:col-span-1">
-            <AthleteProfile />
+            <AthleteProfile athlete={{
+              name: selectedAthlete || 'Sarah-Quita Offringa',
+              id: 'ARU-91',
+              country: 'Starboard, Neilpryde, Brunotti'
+            }} />
           </div>
 
           {/* Right Column - KPI Cards */}
           <div className="lg:col-span-2">
-            <KPICards riderCounts={riderCounts} />
+            <KPICards data={{
+              events: 5,
+              wins: 2,
+              podiums: 5,
+              top10: 5
+            }} />
           </div>
         </div>
 

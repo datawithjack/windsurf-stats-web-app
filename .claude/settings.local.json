@@ -27,7 +27,13 @@
       "Read(/C:\\Users\\jackf\\OneDrive\\Pictures\\Screenshots/**)",
       "Read(/C:\\Users\\jackf\\OneDrive\\Pictures\\Screenshots/**)",
       "Bash(pkill:*)",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Read(/C:\\Users\\jackf\\OneDrive\\Pictures\\Screenshots/**)",
+      "Read(/C:\\Users\\jackf\\OneDrive\\Pictures\\Screenshots/**)",
+      "Bash(git add components/ui/best-heat-scores-table.tsx components/ui/best-jumps-waves-table.tsx components/ui/scores-table.tsx components/athletes/results-table.tsx src/app/event-results/page.tsx .claude/output-styles/windsurf-design-system.md design-consistency-auditor.md)",
+      "Read(/C:\\Users\\jackf\\OneDrive\\Pictures\\Screenshots/**)",
+      "Read(/C:\\Users\\jackf\\OneDrive\\Pictures\\Screenshots/**)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

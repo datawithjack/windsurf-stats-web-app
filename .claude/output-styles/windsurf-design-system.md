@@ -25,11 +25,26 @@ All Recharts components must follow this structure:
 - Always use `chartColors.primary` and `chartColors.secondary` for data colors
 
 ## Table Standards
-Header structure:
+Container structure:
 ```tsx
-<thead className="bg-gray-100 sticky top-0">
+<div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border border-white/20 p-6 h-full flex flex-col">
+  <div className="flex items-center justify-between mb-4 flex-shrink-0">
+    <h3 className="text-lg font-normal text-gray-800">Table Title</h3>
+    {/* Optional: filter buttons or spacer div */}
+  </div>
+  <div className="overflow-auto flex-1 max-h-96">
+    <table className="min-w-full">
+      {/* Table content */}
+    </table>
+  </div>
+</div>
+```
+
+Header structure (CRITICAL: Must include z-10 and bg on both thead and th):
+```tsx
+<thead className="bg-gray-100 sticky top-0 z-10">
   <tr>
-    <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">
+    <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider bg-gray-100">
       Header Text
     </th>
   </tr>
@@ -46,6 +61,12 @@ Body structure:
   </tr>
 </tbody>
 ```
+
+Table alignment requirements:
+- All tables in the same row MUST have consistent header heights
+- Use `flex items-center justify-between mb-4 flex-shrink-0` for title rows
+- Add spacer elements (e.g., `<div className="h-8"></div>`) to align headers when needed
+- Tables without filters should match the height of tables with filters
 
 ## Container Background Patterns
 - Standard containers: `bg-white/95 backdrop-blur-sm shadow-xl border border-white/20 rounded-lg p-6`

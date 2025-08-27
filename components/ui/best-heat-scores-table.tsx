@@ -18,9 +18,10 @@ interface BestHeatScoresTableProps {
 export function BestHeatScoresTable({ data, title = "Best Heat Scores" }: BestHeatScoresTableProps) {
   if (!data || data.length === 0) {
     return (
-      <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border border-white/20 overflow-hidden h-full flex flex-col">
-        <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex-shrink-0">
+      <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border border-white/20 p-6 h-full flex flex-col">
+        <div className="flex items-center justify-between mb-4 flex-shrink-0">
           <h3 className="text-lg font-normal text-gray-800">{title}</h3>
+          <div className="h-8"></div>
         </div>
         <div className="flex-1 flex items-center justify-center">
           <p className="text-gray-500">No data available</p>
@@ -30,17 +31,19 @@ export function BestHeatScoresTable({ data, title = "Best Heat Scores" }: BestHe
   }
 
   return (
-    <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border border-white/20 overflow-hidden h-full flex flex-col">
-      <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex-shrink-0">
+    <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border border-white/20 p-6 h-full flex flex-col">
+      <div className="flex items-center justify-between mb-4 flex-shrink-0">
         <h3 className="text-lg font-normal text-gray-800">{title}</h3>
+        <div className="h-8"></div>
       </div>
+      
       <div className="overflow-auto flex-1 max-h-96">
-        <table className="w-full">
-          <thead className="bg-gray-100 sticky top-0">
+        <table className="min-w-full">
+          <thead className="bg-gray-100 sticky top-0 z-10">
             <tr>
-              <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">Heat No</th>
-              <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">Athlete</th>
-              <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider">Total Points</th>
+              <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider bg-gray-100">Heat No</th>
+              <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider bg-gray-100">Athlete</th>
+              <th className="px-4 py-2 text-left text-xs font-normal text-gray-500 uppercase tracking-wider bg-gray-100">Total Points</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
