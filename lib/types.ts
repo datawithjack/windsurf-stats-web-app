@@ -1,8 +1,7 @@
 // Basic types for the windsurf stats application
 
 export interface AthleteFilter {
-  sailor_name: string;
-  sailor_href: string;
+  athlete_name: string;
 }
 
 export interface YearFilter {
