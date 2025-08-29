@@ -7,14 +7,14 @@ import { ResponsiveNav } from '../../../components/ui/responsive-nav';
 import { MoveScoresChart } from '../../../components/charts/move-scores-chart';
 import { BestHeatScoresTable, BestHeatScore } from '../../../components/ui/best-heat-scores-table';
 import { BestJumpsWavesTable, BestJumpWave } from '../../../components/ui/best-jumps-waves-table';
-import { PWAHeatData } from '../../../lib/types';
+import { HeatData } from '../../../lib/types';
 
 export default function EventStatsPage() {
   const searchParams = useSearchParams();
   const eventId = searchParams.get('eventId');
   const eventName = searchParams.get('eventName') || '2025 Gran Canaria GLORIA PWA Windsurfing Grand Slam';
   
-  const [, setHeatData] = useState<PWAHeatData[]>([]);
+  const [, setHeatData] = useState<HeatData[]>([]);
   const [loading, setLoading] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedGender, setSelectedGender] = useState<string>('Men');
