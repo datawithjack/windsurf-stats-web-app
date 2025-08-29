@@ -159,12 +159,89 @@ const listboxId = `listbox-${Math.random().toString(36).substr(2, 9)}`;
   <ul role="listbox" id={listboxId}>
 ```
 
+### 6. Missing Type Import Errors
+
+#### **Non-existent Type References**
+**Error Pattern:** `'ModuleName' has no exported member named 'TypeName'`
+
+**Common Causes:**
+- Referencing types that don't exist
+- Typos in type names
+- Using outdated type names
+
+**Fix Strategy:**
+```typescript
+// ❌ Before - Non-existent type
+import { PWAHeatData } from '../../../lib/types';
+const [data, setData] = useState<PWAHeatData[]>([]);
+
+// ✅ After - Use existing type
+import { HeatData } from '../../../lib/types';
+const [data, setData] = useState<HeatData[]>([]);
+```
+
+**Verification Steps:**
+1. Check what types are actually exported from types file
+2. Find similar/equivalent types that exist
+3. Update all references to use correct type name
+
+### 7. Next.js 15 Suspense Boundary Errors
+
+#### **useSearchParams() Suspense Requirements**
+**Error Pattern:** `useSearchParams() should be wrapped in a suspense boundary`
+
+**Root Cause:**
+- Next.js 15 requires `useSearchParams()` in Suspense boundaries
+- Prevents client-side rendering bailouts during static generation
+- Build fails during prerendering phase
+
+**Fix Strategy - Component Split Pattern:**
+```typescript
+// ❌ Before - Direct useSearchParams usage
+export default function EventResultsPage() {
+  const searchParams = useSearchParams(); // Causes build error
+  // ... component logic
+}
+
+// ✅ After - Suspense boundary wrapper
+import { Suspense } from 'react';
+
+function EventResultsContent() {
+  const searchParams = useSearchParams(); // Now safe
+  // ... component logic
+}
+
+export default function EventResultsPage() {
+  return (
+    <Suspense fallback={
+      <div className="loading-screen">
+        Loading...
+      </div>
+    }>
+      <EventResultsContent />
+    </Suspense>
+  );
+}
+```
+
+**Key Implementation Points:**
+- Split component into Content + Wrapper pattern
+- Move `useSearchParams()` to inner Content component
+- Provide branded loading fallback for better UX
+- Export wrapper component as default
+
+**Files Commonly Affected:**
+- Pages using `useSearchParams()` from `next/navigation`
+- Dynamic route pages with query parameters
+- Search/filter pages
+
 ## Deployment Strategy
 
 ### Phase 1: Fix Critical Errors
 1. **ESLint unused variables** - Blocks build completely
 2. **TypeScript 'any' types** - Strict mode failures  
 3. **Interface mismatches** - Compilation errors
+4. **Next.js 15 Suspense boundaries** - Prerendering failures
 
 ### Phase 2: Add Production Resilience
 1. **Database fallback handling** - Enables skeleton deployment
@@ -194,6 +271,7 @@ const listboxId = `listbox-${Math.random().toString(36).substr(2, 9)}`;
 - Dynamic data handling
 - State management typing
 - Component prop mismatches
+- Suspense boundary implementation for useSearchParams()
 
 ### Type Definitions (`lib/types.ts`)
 - Interface consistency  
@@ -207,6 +285,8 @@ const listboxId = `listbox-${Math.random().toString(36).substr(2, 9)}`;
 2. `let queryParams` → `const queryParams` (where applicable)
 3. `error.message` → `error instanceof Error ? error.message : 'Unknown error'`
 4. Hard-coded data → Dynamic calculations or fallbacks
+5. Non-existent types → Check and replace with existing types
+6. `useSearchParams()` in page components → Wrap in Suspense boundaries
 
 ### Interface Creation Pattern
 ```typescript
