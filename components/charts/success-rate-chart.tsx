@@ -30,7 +30,7 @@ export function SuccessRateChart({ data }: SuccessRateChartProps) {
   }
 
   // Transform data and add colors
-  const chartData = data.map((item, index) => ({
+  const chartData = data.map((item) => ({
     name: item.name,
     value: Number(item.value) || 0,
     percentage: item.percentage || 0
@@ -47,7 +47,7 @@ export function SuccessRateChart({ data }: SuccessRateChartProps) {
 
   console.log('Chart data (transformed):', chartData);
 
-  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }: any) => {
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: { cx: number, cy: number, midAngle: number, innerRadius: number, outerRadius: number, percent: number }) => {
     const RADIAN = Math.PI / 180;
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);

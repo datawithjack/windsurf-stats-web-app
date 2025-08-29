@@ -18,8 +18,8 @@ export async function GET(request: NextRequest) {
     const connection = await mysql.createConnection(dbConfig);
     
     let query = 'SELECT Position, Rider, Sponsors FROM view_event_results';
-    let queryParams: any[] = [];
-    let whereConditions: string[] = [];
+    const queryParams: (string | number)[] = [];
+    const whereConditions: string[] = [];
     
     if (eventId) {
       whereConditions.push('event_id = ?');

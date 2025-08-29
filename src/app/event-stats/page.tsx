@@ -14,7 +14,7 @@ export default function EventStatsPage() {
   const eventId = searchParams.get('eventId');
   const eventName = searchParams.get('eventName') || '2025 Gran Canaria GLORIA PWA Windsurfing Grand Slam';
   
-  const [heatData, setHeatData] = useState<PWAHeatData[]>([]);
+  const [, setHeatData] = useState<PWAHeatData[]>([]);
   const [loading, setLoading] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedGender, setSelectedGender] = useState<string>('Men');

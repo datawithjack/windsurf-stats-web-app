@@ -28,6 +28,7 @@ export function SearchableSelect({
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const listboxId = `listbox-${Math.random().toString(36).substr(2, 9)}`;
 
   const filteredOptions = options.filter(option =>
     option.label.toLowerCase().includes(searchTerm.toLowerCase())
@@ -112,6 +113,7 @@ export function SearchableSelect({
         role="combobox"
         aria-expanded={isOpen}
         aria-haspopup="listbox"
+        aria-controls={listboxId}
       >
         <span className="truncate">
           {selectedOption ? selectedOption.label : placeholder}
@@ -149,7 +151,7 @@ export function SearchableSelect({
                 No athletes found
               </div>
             ) : (
-              <ul role="listbox">
+              <ul role="listbox" id={listboxId}>
                 {filteredOptions.map((option, index) => (
                   <li
                     key={option.value}

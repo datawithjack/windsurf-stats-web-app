@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import mysql from 'mysql2/promise';
 
+interface JumpScoreResult {
+  score: number;
+  sailor_name: string;
+  heat_no: string;
+  score_type: string;
+}
+
 const dbConfig = {
   host: process.env.MYSQL_HOST || 'localhost',
   port: parseInt(process.env.MYSQL_PORT || '3306'),
@@ -18,7 +25,7 @@ export async function GET(request: NextRequest) {
     const connection = await mysql.createConnection(dbConfig);
     
     // Use the exact query format for best jump score (score_type != 'Wave')
-    let query = `
+    const query = `
       SELECT Heat_No as heat_no, Athlete as sailor_name, Type as score_type, Score as score
       FROM view_heat_scores
       WHERE score = (
@@ -28,7 +35,7 @@ export async function GET(request: NextRequest) {
       ) AND Gender = ? AND Type != 'Wave' AND Counting = 'Yes' AND event_id = ?
     `;
     
-    let queryParams: any[] = [];
+    const queryParams: (string | number)[] = [];
     
     // Add parameters for subquery and main query
     queryParams.push(gender || 'Men');           // For subquery gender
@@ -53,13 +60,13 @@ export async function GET(request: NextRequest) {
       });
     }
     
-    const bestScore = (results[0] as any).score || 0;
+    const bestScore = (results[0] as JumpScoreResult).score || 0;
     
     if (results.length === 1) {
       return NextResponse.json({
         score: bestScore,
-        subtitle: `${(results[0] as any).sailor_name} - Heat ${(results[0] as any).heat_no}`,
-        description: (results[0] as any).score_type,
+        subtitle: `${(results[0] as JumpScoreResult).sailor_name} - Heat ${(results[0] as JumpScoreResult).heat_no}`,
+        description: (results[0] as JumpScoreResult).score_type,
         isMultiple: false
       });
     } else {

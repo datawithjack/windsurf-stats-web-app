@@ -21,7 +21,7 @@ export async function GET(request: Request) {
       FROM athlete_profile_results
     `;
     
-    const params: any[] = [];
+    const params: (string | number)[] = [];
     const conditions: string[] = [];
     
     // Add athlete filtering when athlete is provided

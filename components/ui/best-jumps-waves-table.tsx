@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
-import { chartColors } from '../../lib/chart-colors';
+import React from 'react';
 
 export interface BestJumpWave {
   heatNo: string;

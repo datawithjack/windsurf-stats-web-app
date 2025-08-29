@@ -8,7 +8,7 @@ interface EventResult {
   Position: number;
   Rider: string;
   Sponsors: string;
-  [key: string]: any;
+  [key: string]: string | number;
 }
 
 export default function EventResultsPage() {

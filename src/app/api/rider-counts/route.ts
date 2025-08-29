@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
       FROM PWA_EVENT_RESULTS
     `;
     
-    const params: any[] = [];
+    const params: (string | number)[] = [];
     
     if (eventId) {
       query += ' WHERE event_id = ?';

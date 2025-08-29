@@ -1,5 +1,4 @@
 'use client';
-import Link from 'next/link';
 import { ResponsiveNav } from '../../../components/ui/responsive-nav';
 
 export default function HeadToHeadsPage() {

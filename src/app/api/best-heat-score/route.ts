@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import mysql from 'mysql2/promise';
 
+interface HeatScoreResult {
+  total_points: number;
+  sailor_name: string;
+  heat_no: string;
+}
+
 const dbConfig = {
   host: process.env.MYSQL_HOST || 'localhost',
   port: parseInt(process.env.MYSQL_PORT || '3306'),
@@ -18,7 +24,7 @@ export async function GET(request: NextRequest) {
     const connection = await mysql.createConnection(dbConfig);
     
     // Use view_heat_totals with Total_Points field
-    let query = `
+    const query = `
       SELECT Heat_No as heat_no, Athlete as sailor_name, Total_Points as total_points, Gender as gender
       FROM view_heat_totals
       WHERE Total_Points = (
@@ -28,7 +34,7 @@ export async function GET(request: NextRequest) {
       ) AND Gender = ? AND event_id = ?
     `;
     
-    let queryParams: any[] = [];
+    const queryParams: (string | number)[] = [];
     
     // Add parameters for subquery and main query
     queryParams.push(gender || 'Men');          // For subquery gender
@@ -52,12 +58,12 @@ export async function GET(request: NextRequest) {
       });
     }
     
-    const bestScore = (results[0] as any).total_points || 0;
+    const bestScore = (results[0] as HeatScoreResult).total_points || 0;
     
     if (results.length === 1) {
       return NextResponse.json({
         score: bestScore,
-        subtitle: `${(results[0] as any).sailor_name} - Heat ${(results[0] as any).heat_no}`,
+        subtitle: `${(results[0] as HeatScoreResult).sailor_name} - Heat ${(results[0] as HeatScoreResult).heat_no}`,
         isMultiple: false
       });
     } else {

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import mysql from 'mysql2/promise';
 
-export async function GET(request: Request) {
+export async function GET() {
   let connection;
   try {
     connection = await mysql.createConnection({

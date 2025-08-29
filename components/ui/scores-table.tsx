@@ -1,5 +1,11 @@
+interface Score {
+  athlete: string;
+  score: number | string;
+  position: number;
+}
+
 interface ScoresTableProps {
-  scores: any[];
+  scores: Score[];
   className?: string;
 }
 

@@ -1,6 +1,5 @@
 'use client';
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { AthleteProfile } from '../../../components/athletes/athlete-profile';
 import { KPICards } from '../../../components/athletes/kpi-cards';
 import { ResultsTable } from '../../../components/athletes/results-table';
@@ -18,7 +17,7 @@ export default function AthletesPage() {
   const [results, setResults] = useState<AthleteResult[]>([]);
   const [loading, setLoading] = useState(true);
   const [filtersLoading, setFiltersLoading] = useState(true);
-  const [riderCounts, setRiderCounts] = useState({ male: 0, female: 0 });
+  const [, setRiderCounts] = useState({ male: 0, female: 0 });
 
   // Mock data for the charts
   const bestAverageData = [
@@ -74,12 +73,12 @@ export default function AthletesPage() {
       
       // Process the data to get totals for male and female
       const maleTotal = data
-        .filter((item: any) => item.gender === 'Men')
-        .reduce((sum: number, item: any) => sum + item.total, 0);
+        .filter((item: { gender: string }) => item.gender === 'Men')
+        .reduce((sum: number, item: { total: number }) => sum + item.total, 0);
       
       const femaleTotal = data
-        .filter((item: any) => item.gender === 'Women')
-        .reduce((sum: number, item: any) => sum + item.total, 0);
+        .filter((item: { gender: string }) => item.gender === 'Women')
+        .reduce((sum: number, item: { total: number }) => sum + item.total, 0);
       
       setRiderCounts({ male: maleTotal, female: femaleTotal });
     } catch (error) {

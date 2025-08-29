@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import mysql from 'mysql2/promise';
 
+interface WaveScoreResult {
+  score: number;
+  sailor_name: string;
+  heat_no: string;
+}
+
 const dbConfig = {
   host: process.env.MYSQL_HOST || 'localhost',
   port: parseInt(process.env.MYSQL_PORT || '3306'),
@@ -18,7 +24,7 @@ export async function GET(request: NextRequest) {
     const connection = await mysql.createConnection(dbConfig);
     
     // Use the exact query format for best wave score with event_id in main query
-    let query = `
+    const query = `
       SELECT Heat_No as heat_no, Athlete as sailor_name, Type as score_type, Score as score
       FROM view_heat_scores
       WHERE score = (
@@ -28,20 +34,20 @@ export async function GET(request: NextRequest) {
       ) AND Gender = ? AND Type = 'Wave' AND Counting = 'Yes' AND event_id = ?
     `;
     
-    let queryParams: any[] = [];
+    const queryParams: (string | number)[] = [];
     
     // Add parameters for subquery and main query
     queryParams.push(gender || 'Men');           // For subquery gender
-    queryParams.push(parseInt(eventId) || 374);  // For subquery event_id
+    queryParams.push(parseInt(eventId || '374') || 374);  // For subquery event_id
     queryParams.push(gender || 'Men');           // For main query gender filter
-    queryParams.push(parseInt(eventId) || 374);  // For main query event_id filter
+    queryParams.push(parseInt(eventId || '374') || 374);  // For main query event_id filter
     
     console.log('Executing best wave score query:', query, 'with params:', queryParams);
     
     const [rows] = await connection.execute(query, queryParams);
     await connection.end();
     
-    const results = Array.isArray(rows) ? rows : [];
+    const results = Array.isArray(rows) ? rows as WaveScoreResult[] : [];
     console.log('Best wave score results:', results);
     
     if (results.length === 0) {
@@ -52,12 +58,12 @@ export async function GET(request: NextRequest) {
       });
     }
     
-    const bestScore = results[0].score || 0;
+    const bestScore = results[0]?.score || 0;
     
     if (results.length === 1) {
       return NextResponse.json({
         score: bestScore,
-        subtitle: `${results[0].sailor_name} - Heat ${results[0].heat_no}`,
+        subtitle: `${results[0]?.sailor_name} - Heat ${results[0]?.heat_no}`,
         isMultiple: false
       });
     } else {
@@ -71,7 +77,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Database query error:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch best wave score', details: error.message },
+      { error: 'Failed to fetch best wave score', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

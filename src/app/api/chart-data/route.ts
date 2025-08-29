@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import mysql from 'mysql2/promise';
 
+interface ChartDataResult {
+  score_type: string;
+  best: number;
+  average: number;
+}
+
 const dbConfig = {
   host: process.env.MYSQL_HOST || 'localhost',
   port: parseInt(process.env.MYSQL_PORT || '3306'),
@@ -30,7 +36,7 @@ export async function GET(request: NextRequest) {
         AND Counting = 'Yes'
     `;
     
-    let queryParams: any[] = [];
+    const queryParams: (string | number)[] = [];
     
     // Add event filtering when eventId is provided
     if (eventId) {
@@ -51,14 +57,14 @@ export async function GET(request: NextRequest) {
     const [rows] = await connection.execute(query, queryParams);
     await connection.end();
     
-    const results = Array.isArray(rows) ? rows : [];
+    const results = Array.isArray(rows) ? rows as ChartDataResult[] : [];
     console.log('Chart data results:', results);
     
     // Transform data for the chart component
     const chartData = results.map(row => ({
-      type: (row.score_type || '').toString().trim(), // Clean up any extra spaces
-      bestScore: parseFloat(row.best) || 0,           // Use parseFloat for decimal numbers
-      averageScore: parseFloat(row.average) || 0
+      type: (row?.score_type || '').toString().trim(), // Clean up any extra spaces
+      bestScore: parseFloat(row?.best) || 0,           // Use parseFloat for decimal numbers
+      averageScore: parseFloat(row?.average) || 0
     }));
     
     console.log('Transformed chart data:', chartData);

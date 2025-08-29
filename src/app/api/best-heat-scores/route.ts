@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
       WHERE 1=1
     `;
     
-    const params: any[] = [];
+    const params: (string | number)[] = [];
     
     if (eventId) {
       query += ` AND event_id = ?`;

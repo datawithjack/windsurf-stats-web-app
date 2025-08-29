@@ -1,7 +1,6 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import { chartColors } from '../../lib/chart-colors';
 
 interface ResponsiveNavProps {
   currentPage: 'events' | 'athletes' | 'head-to-heads' | 'about';

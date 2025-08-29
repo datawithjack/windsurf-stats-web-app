@@ -39,7 +39,7 @@ export async function GET(request: Request) {
       LEFT JOIN PWA_EVENT_CATEGORIES AS PEC ON PHD.category_code = PEC.category_code
     `;
     
-    const params: any[] = [];
+    const params: (string | number)[] = [];
     
     // Add event filtering when eventId is provided
     if (eventId) {
