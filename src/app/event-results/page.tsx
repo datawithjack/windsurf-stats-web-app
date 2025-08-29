@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { ResponsiveNav } from '../../../components/ui/responsive-nav';
@@ -11,7 +11,7 @@ interface EventResult {
   [key: string]: string | number;
 }
 
-export default function EventResultsPage() {
+function EventResultsContent() {
   const searchParams = useSearchParams();
   const eventId = searchParams.get('eventId');
   const eventName = searchParams.get('eventName') || '2025 Gran Canaria GLORIA PWA Windsurfing Grand Slam';
@@ -258,5 +258,22 @@ export default function EventResultsPage() {
 
       </div>
     </div>
+  );
+}
+
+export default function EventResultsPage() {
+  return (
+    <Suspense fallback={
+      <div 
+        className="min-h-screen bg-cover bg-center bg-fixed relative flex items-center justify-center"
+        style={{
+          backgroundImage: 'url(https://www.pwaworldtour.com/typo3conf/ext/sitepackage/Resources/Public/Images/bg_main.jpg)'
+        }}
+      >
+        <div className="text-xl text-white">Loading event results...</div>
+      </div>
+    }>
+      <EventResultsContent />
+    </Suspense>
   );
 }

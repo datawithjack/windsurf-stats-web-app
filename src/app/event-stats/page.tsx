@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { StatsCard } from '../../../components/ui/stats-card';
@@ -9,7 +9,7 @@ import { BestHeatScoresTable, BestHeatScore } from '../../../components/ui/best-
 import { BestJumpsWavesTable, BestJumpWave } from '../../../components/ui/best-jumps-waves-table';
 import { HeatData } from '../../../lib/types';
 
-export default function EventStatsPage() {
+function EventStatsContent() {
   const searchParams = useSearchParams();
   const eventId = searchParams.get('eventId');
   const eventName = searchParams.get('eventName') || '2025 Gran Canaria GLORIA PWA Windsurfing Grand Slam';
@@ -449,5 +449,22 @@ export default function EventStatsPage() {
 
       </div>
     </div>
+  );
+}
+
+export default function EventStatsPage() {
+  return (
+    <Suspense fallback={
+      <div 
+        className="min-h-screen bg-cover bg-center bg-fixed relative flex items-center justify-center"
+        style={{
+          backgroundImage: 'url(https://www.pwaworldtour.com/typo3conf/ext/sitepackage/Resources/Public/Images/bg_main.jpg)'
+        }}
+      >
+        <div className="text-xl text-white">Loading event stats...</div>
+      </div>
+    }>
+      <EventStatsContent />
+    </Suspense>
   );
 } 
