@@ -63,8 +63,8 @@ export async function GET(request: NextRequest) {
     // Transform data for the chart component
     const chartData = results.map(row => ({
       type: (row?.score_type || '').toString().trim(), // Clean up any extra spaces
-      bestScore: parseFloat(row?.best) || 0,           // Use parseFloat for decimal numbers
-      averageScore: parseFloat(row?.average) || 0
+      bestScore: Number(row?.best) || 0,               // Convert to number safely
+      averageScore: Number(row?.average) || 0          // Convert to number safely
     }));
     
     console.log('Transformed chart data:', chartData);
