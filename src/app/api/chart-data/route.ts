@@ -3,8 +3,8 @@ import mysql from 'mysql2/promise';
 
 interface ChartDataResult {
   score_type: string;
-  best: number;
-  average: number;
+  best: string | number;
+  average: string | number;
 }
 
 const dbConfig = {
