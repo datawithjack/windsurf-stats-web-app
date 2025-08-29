@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import mysql from 'mysql2/promise';
 
+interface RiderCountResult {
+  count: number;
+}
+
 const dbConfig = {
   host: process.env.MYSQL_HOST || 'localhost',
   port: parseInt(process.env.MYSQL_PORT || '3306'),
@@ -40,10 +44,10 @@ export async function GET(request: NextRequest) {
     const [rows] = await connection.execute(query, queryParams);
     await connection.end();
     
-    const result = Array.isArray(rows) ? rows[0] : { count: 0 };
+    const result = Array.isArray(rows) ? rows[0] as RiderCountResult : { count: 0 };
     console.log('Rider count result:', result);
     
-    return NextResponse.json({ count: result.count || 0 });
+    return NextResponse.json({ count: result?.count || 0 });
   } catch (error) {
     console.error('Database query error:', error instanceof Error ? error.message : 'Unknown error');
     // Return fallback demo data for skeleton deployment
