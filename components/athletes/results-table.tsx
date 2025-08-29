@@ -1,11 +1,7 @@
+import { AthleteResult } from '../../lib/types';
+
 interface ResultsTableProps {
-  results?: Array<{
-    date: string;
-    location: string;
-    event: string;
-    rank: string | number;
-    incomplete: boolean;
-  }>;
+  results?: AthleteResult[];
   loading?: boolean;
 }
 
@@ -19,7 +15,16 @@ export function ResultsTable({ results, loading }: ResultsTableProps) {
     { date: '2023-06-01', location: 'Fiji Pro', event: 'FIJI SURF PRO', rank: 2, incomplete: false }
   ];
 
-  const displayResults = results || mockResults;
+  // Transform AthleteResult to match expected format
+  const transformedResults = results?.map(result => ({
+    date: result.start_date,
+    location: result.location,
+    event: result.event_name,
+    rank: result.position,
+    incomplete: false // Assuming complete for now
+  })) || mockResults;
+
+  const displayResults = transformedResults;
 
   return (
     <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border border-white/20 p-6 h-full flex flex-col">

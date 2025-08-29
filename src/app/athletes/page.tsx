@@ -19,7 +19,21 @@ export default function AthletesPage() {
   const [filtersLoading, setFiltersLoading] = useState(true);
   const [, setRiderCounts] = useState({ male: 0, female: 0 });
 
-  // Mock data for the charts
+  // Calculate KPI data from results
+  const calculateKPIs = (results: AthleteResult[]) => {
+    if (!results || results.length === 0) {
+      return { events: 0, wins: 0, podiums: 0, top10: 0 };
+    }
+    
+    const events = results.length;
+    const wins = results.filter(r => r.position === 1).length;
+    const podiums = results.filter(r => r.position <= 3).length;
+    const top10 = results.filter(r => r.position <= 10).length;
+    
+    return { events, wins, podiums, top10 };
+  };
+
+  // Demo data for charts (can be replaced with real data later)
   const bestAverageData = [
     { type: 'Wave', bestScore: 8.2, averageScore: 4.7 },
     { type: 'Backloop', bestScore: 7.4, averageScore: 6.0 },
@@ -29,11 +43,11 @@ export default function AthletesPage() {
   ];
 
   const successRateData = [
-    { move: 'Wave', successRate: 91 },
-    { move: 'Backloop', successRate: 95 },
-    { move: 'Forward Loop', successRate: 93 },
-    { move: 'Pushloop', successRate: 93 },
-    { move: 'Tabletop', successRate: 100 },
+    { name: 'Wave', value: 91 },
+    { name: 'Backloop', value: 95 },
+    { name: 'Forward Loop', value: 93 },
+    { name: 'Pushloop', value: 93 },
+    { name: 'Tabletop', value: 100 },
   ];
 
   // Fetch filter options
@@ -186,20 +200,15 @@ export default function AthletesPage() {
           {/* Left Column - Athlete Profile */}
           <div className="lg:col-span-1">
             <AthleteProfile athlete={{
-              name: selectedAthlete || 'Sarah-Quita Offringa',
-              id: 'ARU-91',
-              country: 'Starboard, Neilpryde, Brunotti'
+              name: selectedAthlete || 'Select an athlete',
+              id: selectedAthlete ? 'ID-TBD' : '',
+              country: selectedAthlete ? 'Sponsors TBD' : 'Please select an athlete to view profile'
             }} />
           </div>
 
           {/* Right Column - KPI Cards */}
           <div className="lg:col-span-2">
-            <KPICards data={{
-              events: 5,
-              wins: 2,
-              podiums: 5,
-              top10: 5
-            }} />
+            <KPICards data={calculateKPIs(results)} />
           </div>
         </div>
 
