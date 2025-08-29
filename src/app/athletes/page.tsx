@@ -35,11 +35,11 @@ export default function AthletesPage() {
 
   // Demo data for charts (can be replaced with real data later)
   const bestAverageData = [
-    { type: 'Wave', bestScore: 8.2, averageScore: 4.7 },
-    { type: 'Backloop', bestScore: 7.4, averageScore: 6.0 },
-    { type: 'Forward Loop', bestScore: 6.9, averageScore: 5.9 },
-    { type: 'Pushloop', bestScore: 6.3, averageScore: 5.9 },
-    { type: 'Tabletop', bestScore: 3.1, averageScore: 3.1 },
+    { category: 'Wave', best: 8.2, average: 4.7 },
+    { category: 'Backloop', best: 7.4, average: 6.0 },
+    { category: 'Forward Loop', best: 6.9, average: 5.9 },
+    { category: 'Pushloop', best: 6.3, average: 5.9 },
+    { category: 'Tabletop', best: 3.1, average: 3.1 },
   ];
 
   const successRateData = [
