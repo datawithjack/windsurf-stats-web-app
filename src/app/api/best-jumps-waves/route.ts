@@ -1,64 +1,23 @@
-import { NextRequest, NextResponse } from 'next/server';
-import mysql from 'mysql2/promise';
+import { NextResponse } from 'next/server';
+import { getBestJumpsWaves } from '../../../lib/api-client';
 
-const dbConfig = {
-  host: process.env.MYSQL_HOST || 'localhost',
-  port: parseInt(process.env.MYSQL_PORT || '3306'),
-  user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_DATABASE || 'jfa_heatwave_db',
-};
-
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const eventId = searchParams.get('eventId');
-  const gender = searchParams.get('gender');
-  const typeCat = searchParams.get('typeCat'); // Jump or Wave
+  const athlete = searchParams.get('athlete');
   
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    console.log('=== PROXYING TO API SERVER ===');
+    console.log('=== PARAMS ===', { athlete });
+
+    const data = await getBestJumpsWaves(
+      athlete || undefined
+    );
+
+    console.log('=== API SERVER RESPONSE ===', Array.isArray(data) ? data.length + ' records' : data);
     
-    let query = `
-      SELECT 
-        Heat_No as heatNo,
-        Athlete as athlete, 
-        Score as score,
-        Counting as counting,
-        Type as scoreType
-      FROM view_heat_scores 
-      WHERE 1=1
-    `;
-    
-    const params: (string | number)[] = [];
-    
-    if (eventId) {
-      query += ` AND event_id = ?`;
-      params.push(eventId);
-    }
-    
-    if (gender) {
-      query += ` AND Gender = ?`;
-      params.push(gender);
-    }
-    
-    if (typeCat) {
-      query += ` AND Type_Cat = ?`;
-      params.push(typeCat);
-    }
-    
-    query += ` ORDER BY Score DESC`;
-    
-    console.log('Executing best jumps/waves query:', query);
-    console.log('With params:', params);
-    
-    const [rows] = await connection.execute(query, params);
-    await connection.end();
-    
-    console.log('Best jumps/waves results:', rows);
-    
-    return NextResponse.json(rows);
+    return NextResponse.json(data);
   } catch (error) {
-    console.error('Database error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('Error proxying to API server:', error);
+    return NextResponse.json([], { status: 200 });
   }
 }

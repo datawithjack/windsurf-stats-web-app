@@ -1,59 +1,23 @@
-import { NextRequest, NextResponse } from 'next/server';
-import mysql from 'mysql2/promise';
+import { NextResponse } from 'next/server';
+import { getEventResults } from '../../../lib/api-client';
 
-const dbConfig = {
-  host: process.env.MYSQL_HOST || 'localhost',
-  port: parseInt(process.env.MYSQL_PORT || '3306'),
-  user: process.env.MYSQL_USER || 'root',
-  password: process.env.MYSQL_PASSWORD || '',
-  database: process.env.MYSQL_DATABASE || 'jfa_heatwave_db',
-};
-
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const eventId = searchParams.get('eventId');
-  const gender = searchParams.get('gender');
-
+  
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    console.log('=== PROXYING TO API SERVER ===');
+    console.log('=== PARAMS ===', { eventId });
+
+    const data = await getEventResults(
+      eventId || undefined
+    );
+
+    console.log('=== API SERVER RESPONSE ===', Array.isArray(data) ? data.length + ' records' : data);
     
-    let query = 'SELECT Position, Rider, Sponsors FROM view_event_results';
-    const queryParams: (string | number)[] = [];
-    const whereConditions: string[] = [];
-    
-    if (eventId) {
-      whereConditions.push('event_id = ?');
-      queryParams.push(eventId);
-    }
-    
-    if (gender) {
-      whereConditions.push('Gender = ?');
-      queryParams.push(gender);
-    }
-    
-    if (whereConditions.length > 0) {
-      query += ' WHERE ' + whereConditions.join(' AND ');
-    }
-    
-    query += ' ORDER BY Position ASC';
-    
-    console.log('Executing query:', query, 'with params:', queryParams);
-    
-    const [rows] = await connection.execute(query, queryParams);
-    await connection.end();
-    
-    console.log('Query result:', rows);
-    
-    // Ensure we return an array
-    const results = Array.isArray(rows) ? rows : [];
-    return NextResponse.json(results);
+    return NextResponse.json(data);
   } catch (error) {
-    console.error('Database query error:', error instanceof Error ? error.message : 'Unknown error');
-    // Return fallback demo data for skeleton deployment
-    return NextResponse.json([
-      { Position: 1, Rider: "Demo Athlete 1", Sponsors: "Demo Sponsors A" },
-      { Position: 2, Rider: "Demo Athlete 2", Sponsors: "Demo Sponsors B" },
-      { Position: 3, Rider: "Demo Athlete 3", Sponsors: "Demo Sponsors C" }
-    ]);
+    console.error('Error proxying to API server:', error);
+    return NextResponse.json([], { status: 200 });
   }
 }

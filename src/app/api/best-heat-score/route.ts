@@ -1,86 +1,23 @@
-import { NextRequest, NextResponse } from 'next/server';
-import mysql from 'mysql2/promise';
+import { NextResponse } from 'next/server';
+import { getBestHeatScore } from '../../../lib/api-client';
 
-interface HeatScoreResult {
-  total_points: number;
-  sailor_name: string;
-  heat_no: string;
-}
-
-const dbConfig = {
-  host: process.env.MYSQL_HOST || 'localhost',
-  port: parseInt(process.env.MYSQL_PORT || '3306'),
-  user: process.env.MYSQL_USER || 'root',
-  password: process.env.MYSQL_PASSWORD || '',
-  database: process.env.MYSQL_DATABASE || 'jfa_heatwave_db',
-};
-
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const eventId = searchParams.get('eventId');
-  const gender = searchParams.get('gender');
-
+  const athlete = searchParams.get('athlete');
+  
   try {
-    const connection = await mysql.createConnection(dbConfig);
+    console.log('=== PROXYING TO API SERVER ===');
+    console.log('=== PARAMS ===', { athlete });
+
+    const data = await getBestHeatScore(
+      athlete || undefined
+    );
+
+    console.log('=== API SERVER RESPONSE ===', Array.isArray(data) ? data.length + ' records' : data);
     
-    // Use view_heat_totals with Total_Points field
-    const query = `
-      SELECT Heat_No as heat_no, Athlete as sailor_name, Total_Points as total_points, Gender as gender
-      FROM view_heat_totals
-      WHERE Total_Points = (
-        SELECT MAX(Total_Points)
-        FROM view_heat_totals
-        WHERE Gender = ? AND event_id = ?
-      ) AND Gender = ? AND event_id = ?
-    `;
-    
-    const queryParams: (string | number)[] = [];
-    
-    // Add parameters for subquery and main query
-    queryParams.push(gender || 'Men');          // For subquery gender
-    queryParams.push(parseInt(eventId || '374') || 374); // For subquery event_id
-    queryParams.push(gender || 'Men');          // For main query gender filter
-    queryParams.push(parseInt(eventId || '374') || 374); // For main query event_id filter
-    
-    console.log('Executing best heat score query:', query, 'with params:', queryParams);
-    
-    const [rows] = await connection.execute(query, queryParams);
-    await connection.end();
-    
-    const results = Array.isArray(rows) ? rows : [];
-    console.log('Best heat score results:', results);
-    
-    if (results.length === 0) {
-      return NextResponse.json({
-        score: 0,
-        subtitle: '- Heat',
-        isMultiple: false
-      });
-    }
-    
-    const bestScore = (results[0] as HeatScoreResult).total_points || 0;
-    
-    if (results.length === 1) {
-      return NextResponse.json({
-        score: bestScore,
-        subtitle: `${(results[0] as HeatScoreResult).sailor_name} - Heat ${(results[0] as HeatScoreResult).heat_no}`,
-        isMultiple: false
-      });
-    } else {
-      return NextResponse.json({
-        score: bestScore,
-        subtitle: 'Multiple',
-        isMultiple: true
-      });
-    }
-    
+    return NextResponse.json(data);
   } catch (error) {
-    console.error('Database query error:', error instanceof Error ? error.message : 'Unknown error');
-    // Return fallback demo data for skeleton deployment
-    return NextResponse.json({
-      score: 15.8,
-      subtitle: "Demo Data - Heat 3",
-      isMultiple: false
-    });
+    console.error('Error proxying to API server:', error);
+    return NextResponse.json([], { status: 200 });
   }
 }

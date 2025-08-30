@@ -1,37 +1,23 @@
 import { NextResponse } from 'next/server';
-import mysql from 'mysql2/promise';
+import { getHeatsheets } from '../../../lib/api-client';
 
-export async function GET() {
-  let connection;
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const eventId = searchParams.get('eventId');
+  
   try {
-    connection = await mysql.createConnection({
-      host: process.env.MYSQL_HOST || 'localhost',
-      port: parseInt(process.env.MYSQL_PORT || '3306'),
-      user: process.env.MYSQL_USER,
-      password: process.env.MYSQL_PASSWORD,
-      database: process.env.MYSQL_DATABASE,
-    });
+    console.log('=== PROXYING TO API SERVER ===');
+    console.log('=== PARAMS ===', { eventId });
 
-    const [rows] = await connection.execute(`
-      SELECT
-        heatsheet_id,
-        category_code,
-        heat_id,
-        heat_no,
-        sailor_name,
-        sail_number,
-        country,
-        rank,
-        status
-      FROM PWA_HEATSHEETS
-      ORDER BY category_code, heat_no, rank
-    `);
+    const data = await getHeatsheets(
+      eventId || undefined
+    );
 
-    return NextResponse.json(rows || []);
-  } catch (err) {
-    console.error('Error fetching heatsheet data:', err);
+    console.log('=== API SERVER RESPONSE ===', Array.isArray(data) ? data.length + ' records' : data);
+    
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error('Error proxying to API server:', error);
     return NextResponse.json([], { status: 200 });
-  } finally {
-    if (connection) await connection.end();
   }
-} 
+}
